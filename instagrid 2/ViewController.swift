@@ -10,6 +10,8 @@ import Photos
 
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
+    var imageGrid = ImageGrid()
+
     
     
     @IBOutlet weak var addPicture: UIStackView!
@@ -96,22 +98,33 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
             present(imagePicker, animated: true, completion: nil)
         }
 
-        @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let selectedImage = info[.originalImage] as? UIImage {
-                selectedImageView?.image = selectedImage
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let selectedImage = info[.originalImage] as? UIImage {
+            // Suppose que chaque UIImageView a un tag correspondant à son index dans 'imageGrid.images'
+            if let selectedTag = selectedImageView?.tag {
+                imageGrid.setImage(selectedImage, atIndex: selectedTag)
+                updateImageViews()
             }
-            picker.dismiss(animated: true, completion: nil)
         }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    func updateImageViews() {
+        imageA.image = imageGrid.images[0]
+        imageB.image = imageGrid.images[1]
+        imageC.image = imageGrid.images[2]
+        imageD.image = imageGrid.images[3]
+        // Assure-toi que chaque UIImageView a un tag correspondant à son index dans 'imageGrid.images'
+    }
 
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true, completion: nil)
-        }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
   
-        
+            imageA.tag = 0
+            imageB.tag = 1
+            imageC.tag = 2
+            imageD.tag = 3
            configureImageView(imageA)
            configureImageView(imageB)
            configureImageView(imageC)
@@ -179,30 +192,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
     }
     
     @IBAction func templateButtonPressed(_ sender: UIButton) {
-        [Template1, Template2, Template3].forEach { button in
-            button.subviews.forEach { subview in
-                if subview.tag == 100 {
-                    subview.removeFromSuperview()
-                }
-            }
-        }
-
-        let selectedImageView = UIImageView(image: UIImage(named: "Selected"))
-        selectedImageView.frame = sender.bounds
-        selectedImageView.tag = 100
-        sender.addSubview(selectedImageView)
-
         switch sender {
         case Template1:
+            imageGrid.setTemplate(.template1)
             applyLayoutForTemplate1()
         case Template2:
+            imageGrid.setTemplate(.template2)
             applyLayoutForTemplate2()
         case Template3:
+            imageGrid.setTemplate(.template3)
             applyLayoutForTemplate3()
         default:
             break
         }
     }
+
 
     func applyLayoutForTemplate1() {
         if UIDevice.current.orientation.isPortrait {
