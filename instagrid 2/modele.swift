@@ -17,7 +17,6 @@ struct ImageGrid {
         case template2
         case template3
 
-        // Ajoute ici des propriétés ou méthodes spécifiques à chaque template si nécessaire.
     }
 
     mutating func setImage(_ image: UIImage, atIndex index: Int) {
@@ -29,5 +28,4 @@ struct ImageGrid {
         currentTemplate = template
     }
 
-    // Ajoute d'autres fonctions si nécessaire.
-}
+    }
