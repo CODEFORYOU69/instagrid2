@@ -100,7 +100,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
 
     @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[.originalImage] as? UIImage {
-            // Suppose que chaque UIImageView a un tag correspondant à son index dans 'imageGrid.images'
+
             if let selectedTag = selectedImageView?.tag {
                 imageGrid.setImage(selectedImage, atIndex: selectedTag)
                 updateImageViews()
@@ -109,11 +109,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         picker.dismiss(animated: true, completion: nil)
     }
     func updateImageViews() {
+
         imageA.image = imageGrid.images[0]
         imageB.image = imageGrid.images[1]
         imageC.image = imageGrid.images[2]
         imageD.image = imageGrid.images[3]
-        // Assure-toi que chaque UIImageView a un tag correspondant à son index dans 'imageGrid.images'
+
     }
 
     
@@ -121,6 +122,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
     override func viewDidLoad() {
         super.viewDidLoad()
   
+
             imageA.tag = 0
             imageB.tag = 1
             imageC.tag = 2
@@ -193,109 +195,111 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
     
     @IBAction func templateButtonPressed(_ sender: UIButton) {
         switch sender {
-        case Template1:
-            imageGrid.setTemplate(.template1)
+            case Template1:
+                imageGrid.setTemplate(.template1)
+            case Template2:
+                imageGrid.setTemplate(.template2)
+            case Template3:
+                imageGrid.setTemplate(.template3)
+            default:
+                break
+            }
+            applyLayoutForCurrentTemplate()
+    }
+    func applyLayoutForCurrentTemplate() {
+        switch imageGrid.currentTemplate {
+        case .template1:
             applyLayoutForTemplate1()
-        case Template2:
-            imageGrid.setTemplate(.template2)
+        case .template2:
             applyLayoutForTemplate2()
-        case Template3:
-            imageGrid.setTemplate(.template3)
-            applyLayoutForTemplate3()
-        default:
-            break
+        case .template3:
+
         }
     }
 
 
     func applyLayoutForTemplate1() {
-        if UIDevice.current.orientation.isPortrait {
-            widthConstraintViewA.constant = 270
-            widthConstraintViewB.constant = 0
-            
-            ViewB.isHidden = true
-            ViewD.isHidden = false
-            
-            widthConstraintViewC.constant = 127
-            widthConstraintViewD.constant = 127
-            
+        UIView.animate(withDuration: 0.5, animations: {
+            if UIDevice.current.orientation.isPortrait {
+                self.widthConstraintViewA.constant = 270
+                self.widthConstraintViewB.constant = 0
+                
+                self.ViewB.isHidden = true
+                self.ViewD.isHidden = false
+                
+                self.widthConstraintViewC.constant = 127
+                self.widthConstraintViewD.constant = 127
+            } else {
+                self.widthConstraintViewA.constant = 100
+                self.widthConstraintViewB.constant = 0
+                
+                self.ViewB.isHidden = true
+                self.ViewD.isHidden = false
+                
+                self.widthConstraintViewC.constant = 100
+                self.widthConstraintViewD.constant = 100
+            }
+
             self.view.layoutIfNeeded()
+        }, completion: { _ in
+            self.resizeImagesForNewLayout()
             
-            resizeImagesForNewLayout()
-            
-            imageA.isUserInteractionEnabled = true
-            imageB.isUserInteractionEnabled = false
-        } else if UIDevice.current.orientation.isLandscape {
-            widthConstraintViewA.constant = 100
-            widthConstraintViewB.constant = 0
-            
-            ViewB.isHidden = true
-            ViewD.isHidden = false
-            
-            widthConstraintViewC.constant = 100
-            widthConstraintViewD.constant = 100
-            
-            self.view.layoutIfNeeded()
-            
-            resizeImagesForNewLayout()
-            
-            imageA.isUserInteractionEnabled = true
-            imageB.isUserInteractionEnabled = false
-        }}
+            self.imageA.isUserInteractionEnabled = true
+            self.imageB.isUserInteractionEnabled = false
+        })
+    }
 
     func applyLayoutForTemplate2() {
-        if UIDevice.current.orientation.isPortrait {
-            widthConstraintViewC.constant = 270
-            widthConstraintViewD.constant = 0
-            ViewD.isHidden = true
-            ViewB.isHidden = false
-            imageB.isHidden = false
-            
-            
-            
-            widthConstraintViewA.constant = 127
-            widthConstraintViewB.constant = 127
+        UIView.animate(withDuration: 0.5, animations: {
+            if UIDevice.current.orientation.isPortrait {
+                self.widthConstraintViewC.constant = 270
+                self.widthConstraintViewD.constant = 0
+                self.ViewD.isHidden = true
+                self.ViewB.isHidden = false
+                self.imageB.isHidden = false
+                
+                self.widthConstraintViewA.constant = 127
+                self.widthConstraintViewB.constant = 127
+            } else {
+                self.widthConstraintViewC.constant = 216
+                self.widthConstraintViewD.constant = 0
+                self.ViewD.isHidden = true
+                self.ViewB.isHidden = false
+                self.imageB.isHidden = false
+                
+                self.widthConstraintViewA.constant = 100
+                self.widthConstraintViewB.constant = 100
+            }
             self.view.layoutIfNeeded()
-            
-            resizeImagesForNewLayout()
-            
-            imageB.isUserInteractionEnabled = true
-        } else if UIDevice.current.orientation.isLandscape {
-            widthConstraintViewC.constant = 216
-            widthConstraintViewD.constant = 0
-            ViewD.isHidden = true
-            ViewB.isHidden = false
-            imageB.isHidden = false
-            
-            
-            
-            widthConstraintViewA.constant = 100
-            widthConstraintViewB.constant = 100
-            self.view.layoutIfNeeded()
-            
-            resizeImagesForNewLayout()
-            
-            imageB.isUserInteractionEnabled = true
-        }}
-    
+        }, completion: { _ in
+            self.resizeImagesForNewLayout()
+            self.imageB.isUserInteractionEnabled = true
+        })
+    }
+
     func applyLayoutForTemplate3() {
-        if UIDevice.current.orientation.isPortrait {
-            widthConstraintViewC.constant = 127
-            widthConstraintViewD.constant = 127
-            widthConstraintViewA.constant = 127
-            widthConstraintViewB.constant = 127
-            ViewD.isHidden = false
-            ViewB.isHidden = false
-        } else if UIDevice.current.orientation.isLandscape {
-            
-            widthConstraintViewC.constant = 100
-            widthConstraintViewD.constant = 100
-            widthConstraintViewA.constant = 100
-            widthConstraintViewB.constant = 100
-            ViewD.isHidden = false
-            ViewB.isHidden = false
-            
-        }}
+        UIView.animate(withDuration: 0.5, animations: {
+            if UIDevice.current.orientation.isPortrait {
+                self.widthConstraintViewC.constant = 127
+                self.widthConstraintViewD.constant = 127
+                self.widthConstraintViewA.constant = 127
+                self.widthConstraintViewB.constant = 127
+                self.ViewD.isHidden = false
+                self.ViewB.isHidden = false
+            } else {
+                self.widthConstraintViewC.constant = 100
+                self.widthConstraintViewD.constant = 100
+                self.widthConstraintViewA.constant = 100
+                self.widthConstraintViewB.constant = 100
+                self.ViewD.isHidden = false
+                self.ViewB.isHidden = false
+            }
+            self.view.layoutIfNeeded()
+        }, completion: { _ in
+            self.resizeImagesForNewLayout()
+        })
+    }
+
     func resizeImagesForNewLayout() {
         [imageA, imageB, imageC, imageD].forEach { imageView in
             if let image = imageView?.image {
